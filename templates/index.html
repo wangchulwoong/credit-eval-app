@@ -403,7 +403,12 @@ document.getElementById('pdfInput').addEventListener('change', async function() 
     const b64 = await new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result.split(',')[1]); r.onerror=()=>rej(new Error('읽기 실패')); r.readAsDataURL(file); });
     const resp = await fetch('/api/analyze', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({pdf_base64:b64, prompt:PROMPT}) });
     const apiData = await resp.json();
-    if(apiData.error) throw new Error(apiData.error);
+    if(apiData.error) {
+  const msg = typeof apiData.error === 'object'
+    ? (apiData.error.message || JSON.stringify(apiData.error))
+    : apiData.error;
+  throw new Error(msg);
+}
     const txt = apiData.content?.find(b=>b.type==='text')?.text || '';
     const clean = txt.replace(/```json|```/g,'').trim();
     const fd = JSON.parse(clean);
