@@ -122,6 +122,58 @@ body { font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-se
   <div class="sidebar">
     <div class="sidebar-header">건설사 목록</div>
     <div class="sidebar-list" id="companyList"></div>
+    <div style="padding:10px 12px;border-top:1px solid #e2e8f0;background:#f8fafc">
+      <div style="font-size:10px;font-weight:600;color:#94a3b8;margin-bottom:8px;letter-spacing:.05em">등급별 여신한도 기준</div>
+      <table style="width:100%;border-collapse:collapse;font-size:10px">
+        <tr style="color:#94a3b8;border-bottom:1px solid #e2e8f0">
+          <th style="text-align:left;padding:3px 4px;font-weight:500">등급</th>
+          <th style="text-align:center;padding:3px 4px;font-weight:500">점수</th>
+          <th style="text-align:right;padding:3px 4px;font-weight:500">한도 상한</th>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9">
+          <td style="padding:4px 4px"><span style="background:#1a237e;color:#fff;font-size:9px;padding:1px 6px;border-radius:3px;font-weight:600">S</span></td>
+          <td style="text-align:center;padding:4px 4px;color:#94a3b8;font-size:9px">90+</td>
+          <td style="text-align:right;padding:4px 4px;color:#1a202c;font-weight:600">30억원</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9">
+          <td style="padding:4px 4px"><span style="background:#1565c0;color:#fff;font-size:9px;padding:1px 6px;border-radius:3px;font-weight:600">AAA</span></td>
+          <td style="text-align:center;padding:4px 4px;color:#94a3b8;font-size:9px">80~89</td>
+          <td style="text-align:right;padding:4px 4px;color:#1a202c;font-weight:600">25억원</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9">
+          <td style="padding:4px 4px"><span style="background:#0277bd;color:#fff;font-size:9px;padding:1px 6px;border-radius:3px;font-weight:600">AA</span></td>
+          <td style="text-align:center;padding:4px 4px;color:#94a3b8;font-size:9px">70~79</td>
+          <td style="text-align:right;padding:4px 4px;color:#1a202c;font-weight:600">20억원</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9">
+          <td style="padding:4px 4px"><span style="background:#00695c;color:#fff;font-size:9px;padding:1px 6px;border-radius:3px;font-weight:600">A</span></td>
+          <td style="text-align:center;padding:4px 4px;color:#94a3b8;font-size:9px">60~69</td>
+          <td style="text-align:right;padding:4px 4px;color:#1a202c;font-weight:600">15억원</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9">
+          <td style="padding:4px 4px"><span style="background:#e65100;color:#fff;font-size:9px;padding:1px 6px;border-radius:3px;font-weight:600">BBB</span></td>
+          <td style="text-align:center;padding:4px 4px;color:#94a3b8;font-size:9px">50~59</td>
+          <td style="text-align:right;padding:4px 4px;color:#1a202c;font-weight:600">10억원</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9">
+          <td style="padding:4px 4px"><span style="background:#bf360c;color:#fff;font-size:9px;padding:1px 6px;border-radius:3px;font-weight:600">BB</span></td>
+          <td style="text-align:center;padding:4px 4px;color:#94a3b8;font-size:9px">40~49</td>
+          <td style="text-align:right;padding:4px 4px;color:#1a202c;font-weight:600">5억원</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9">
+          <td style="padding:4px 4px"><span style="background:#b71c1c;color:#fff;font-size:9px;padding:1px 6px;border-radius:3px;font-weight:600">B</span></td>
+          <td style="text-align:center;padding:4px 4px;color:#94a3b8;font-size:9px">30~39</td>
+          <td style="text-align:right;padding:4px 4px;color:#1a202c;font-weight:600">3억원 ★</td>
+        </tr>
+        <tr>
+          <td style="padding:4px 4px"><span style="background:#37474f;color:#fff;font-size:9px;padding:1px 6px;border-radius:3px;font-weight:600">C</span></td>
+          <td style="text-align:center;padding:4px 4px;color:#94a3b8;font-size:9px">~29</td>
+          <td style="text-align:right;padding:4px 4px;color:#dc2626;font-weight:600">여신불가</td>
+        </tr>
+      </table>
+      <div style="margin-top:6px;font-size:9px;color:#94a3b8">★ B등급: 담보 조건부</div>
+    </div>
+
     <div class="sidebar-footer">
       <div id="addFormWrap"></div>
       <button class="btn-add" id="btnShowAdd">+ 건설사 추가</button>
@@ -253,7 +305,15 @@ function getGrade(total) {
 
 function calcCredit(total, fd) {
   const grade = getGrade(total);
-  const mults={S:{e:0.50,r:0.20},AAA:{e:0.40,r:0.15},AA:{e:0.30,r:0.12},A:{e:0.20,r:0.10},BBB:{e:0.15,r:0.07},BB:{e:0.10,r:0.05},B:{e:0.05,r:0.03}};
+  const mults={
+    S:  {e:0.50,r:0.20,cap:3000000000},
+    AAA:{e:0.40,r:0.15,cap:2500000000},
+    AA: {e:0.30,r:0.12,cap:2000000000},
+    A:  {e:0.20,r:0.10,cap:1500000000},
+    BBB:{e:0.15,r:0.07,cap:1000000000},
+    BB: {e:0.10,r:0.05,cap:500000000},
+    B:  {e:0.05,r:0.03,cap:300000000}
+  };
   const m = mults[grade];
   if(!m) return { limit:0, basis:'여신불가', condition:'', grade };
   const el=ok(fd.total_equity)?fd.total_equity*m.e:null;
@@ -262,9 +322,9 @@ function calcCredit(total, fd) {
   if(el&&rl){limit=Math.min(el,rl);basis=limit===el?`자기자본×${(m.e*100).toFixed(0)}%`:`매출액×${(m.r*100).toFixed(0)}%`;}
   else if(el){limit=el;basis=`자기자본×${(m.e*100).toFixed(0)}%`;}
   else if(rl){limit=rl;basis=`매출액×${(m.r*100).toFixed(0)}%`;}
+  if(limit && limit > m.cap){limit=m.cap;basis+=` → 상한 적용`;}
   return { limit, basis, condition: grade==='B'?'담보 조건부':'', grade };
 }
-
 // ─── 렌더링 ────────────────────────────────────────────────
 function renderSidebar() {
   const list = document.getElementById('companyList');
